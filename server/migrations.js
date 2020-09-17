@@ -121,6 +121,7 @@ Migrations.add('use-css-class-for-boards-colors', () => {
     '#568BA2': 'corteza',
     '#499BEA': 'clearblue',
     '#596557': 'natural',
+    '#2A80B8': 'modern',
   };
   Boards.find().forEach(board => {
     const oldBoardColor = board.background.color;
@@ -242,19 +243,6 @@ Migrations.add('add-checklist-items', () => {
       { $unset: { items: 1 } },
       noValidate,
     );
-  });
-});
-
-Migrations.add('add-profile-view', () => {
-  Users.find().forEach(user => {
-    if (!user.hasOwnProperty('profile.boardView')) {
-      // Set default view
-      Users.direct.update(
-        { _id: user._id },
-        { $set: { 'profile.boardView': 'board-view-lists' } },
-        noValidate,
-      );
-    }
   });
 });
 
@@ -1040,6 +1028,19 @@ Migrations.add('add-sort-field-to-boards', () => {
   Boards.find().forEach((board, index) => {
     if (!board.hasOwnProperty('sort')) {
       Boards.direct.update(board._id, { $set: { sort: index } }, noValidate);
+    }
+  });
+});
+
+Migrations.add('add-default-profile-view', () => {
+  Users.find().forEach(user => {
+    if (!user.hasOwnProperty('profile.boardView')) {
+      // Set default view
+      Users.direct.update(
+        { _id: user._id },
+        { $set: { 'profile.boardView': 'board-view-swimlanes' } },
+        noValidate,
+      );
     }
   });
 });

@@ -16,7 +16,7 @@ const viewTitles = {
 
 BlazeComponent.extendComponent({
   mixins() {
-    return [Mixins.InfiniteScrolling, Mixins.PerfectScrollbar];
+    return [Mixins.InfiniteScrolling];
   },
 
   onCreated() {
@@ -462,6 +462,13 @@ BlazeComponent.extendComponent({
     return `wekan-export-board-${boardId}.tsv`;
   },
 }).register('exportBoardPopup');
+
+Template.exportBoard.events({
+  'click .html-export-board': async event => {
+    event.preventDefault();
+    await ExportHtml(Popup)();
+  },
+});
 
 Template.labelsWidget.events({
   'click .js-label': Popup.open('editLabel'),

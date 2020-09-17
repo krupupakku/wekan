@@ -173,7 +173,7 @@ services:
       # that if you're using more than 1 instance of Wekan
       # (or any MeteorJS based tool) you're supposed to set
       # MONGO_OPLOG_URL as an environment variable.
-      # Without setting it, Meteor will perform a pull-and-diff
+      # Without setting it, Meteor will perform a poll-and-diff
       # update of it's dataset. With it, Meteor will update from
       # the OPLOG. See here
       #   https://blog.meteor.com/tuning-meteor-mongo-livedata-for-scalability-13fe9deb8908
@@ -229,11 +229,6 @@ services:
       # ==== RICH TEXT EDITOR IN CARD COMMENTS ====
       # https://github.com/wekan/wekan/pull/2560
       - RICHER_CARD_COMMENT_EDITOR=false
-      #---------------------------------------------------------------
-      # ==== MOUSE SCROLL ====
-      # https://github.com/wekan/wekan/issues/2949
-      - SCROLLINERTIA=0
-      - SCROLLAMOUNT=auto
       #---------------------------------------------------------------
       # ==== CARD OPENED, SEND WEBHOOK MESSAGE ====
       # https://github.com/wekan/wekan/issues/2518
@@ -320,6 +315,8 @@ services:
       # Enable the OAuth2 connection
       # example: OAUTH2_ENABLED=true
       #- OAUTH2_ENABLED=false
+      # Use OAuth2 ADFS additional changes. Also needs OAUTH2_ENABLED=true setting.
+      #- OAUTH2_ADFS_ENABLED=false
       # OAuth2 docs: https://github.com/wekan/wekan/wiki/OAuth2
       # OAuth2 Client ID, for example from Rocket.Chat. Example: abcde12345
       # example: OAUTH2_CLIENT_ID=abcde12345
@@ -528,11 +525,27 @@ services:
       # example : LOGOUT_ON_MINUTES=55
       #- LOGOUT_ON_MINUTES=
       #---------------------------------------------------------------------
-      # PASSWORD_LOGIN_ENABLED : Enable or not the password login form. 
+      # PASSWORD_LOGIN_ENABLED : Enable or not the password login form.
       # example: PASSWORD_LOGIN_ENABLED=false
       # - PASSWORD_LOGIN_ENABLED
       #-------------------------------------------------------------------
-      
+      #- CAS_ENABLED=true
+      #- CAS_BASE_URL=https://cas.example.com/cas
+      #- CAS_LOGIN_URL=https://cas.example.com/login
+      #- CAS_VALIDATE_URL=https://cas.example.com/cas/p3/serviceValidate
+      #---------------------------------------------------------------------
+      #- SAML_ENABLED=true
+      #- SAML_PROVIDER=
+      #- SAML_ENTRYPOINT=
+      #- SAML_ISSUER=
+      #- SAML_CERT=
+      #- SAML_IDPSLO_REDIRECTURL=
+      #- SAML_PRIVATE_KEYFILE=
+      #- SAML_PUBLIC_CERTFILE=
+      #- SAML_IDENTIFIER_FORMAT=
+      #- SAML_LOCAL_PROFILE_MATCH_ATTRIBUTE=
+      #- SAML_ATTRIBUTES=
+      #---------------------------------------------------------------------
 
     depends_on:
       - mongodb

@@ -8,7 +8,7 @@ Meteor.startup(() => {
 
 BlazeComponent.extendComponent({
   mixins() {
-    return [Mixins.InfiniteScrolling, Mixins.PerfectScrollbar];
+    return [Mixins.InfiniteScrolling];
   },
 
   calculateNextPeak() {
@@ -38,22 +38,6 @@ BlazeComponent.extendComponent({
     Meteor.subscribe('unsaved-edits');
   },
 
-  voteState() {
-    const card = this.currentData();
-    const userId = Meteor.userId();
-    let state;
-    if (card.vote) {
-      if (card.vote.positive) {
-        state = _.contains(card.vote.positive, userId);
-        if (state === true) return true;
-      }
-      if (card.vote.negative) {
-        state = _.contains(card.vote.negative, userId);
-        if (state === true) return false;
-      }
-    }
-    return null;
-  },
   isWatching() {
     const card = this.currentData();
     return card.findWatcher(Meteor.userId());
@@ -73,12 +57,19 @@ BlazeComponent.extendComponent({
   },
 
   scrollParentContainer() {
-    const cardPanelWidth = 510;
-    const bodyBoardComponent = this.parentComponent().parentComponent();
+    const cardPanelWidth = 600;
+    const parentComponent = this.parentComponent();
+    // TODO sometimes parentComponent is not available, maybe because it's not
+    // yet created?!
+    if (!parentComponent) return;
+    const bodyBoardComponent = parentComponent.parentComponent();
     //On Mobile View Parent is Board, Not Board Body. I cant see how this funciton should work then.
     if (bodyBoardComponent === null) return;
     const $cardView = this.$(this.firstNode());
     const $cardContainer = bodyBoardComponent.$('.js-swimlanes');
+    // TODO sometimes cardContainer is not available, maybe because it's not yet
+    // created?!
+    if (!$cardContainer) return;
     const cardContainerScroll = $cardContainer.scrollLeft();
     const cardContainerWidth = $cardContainer.width();
 
@@ -180,13 +171,6 @@ BlazeComponent.extendComponent({
 
     if (!Utils.isMiniScreen()) {
       Meteor.setTimeout(() => {
-        $('.card-details').mCustomScrollbar({
-          theme: 'minimal-dark',
-          setWidth: false,
-          setLeft: 0,
-          scrollbarPosition: 'outside',
-          mouseWheel: true,
-        });
         this.scrollParentContainer();
       }, 500);
     }
@@ -405,9 +389,9 @@ BlazeComponent.extendComponent({
           const forIt = $(e.target).hasClass('js-vote-positive');
           let newState = null;
           if (
-            this.voteState() === null ||
-            (this.voteState() === false && forIt) ||
-            (this.voteState() === true && !forIt)
+            this.data().voteState() === null ||
+            (this.data().voteState() === false && forIt) ||
+            (this.data().voteState() === true && !forIt)
           ) {
             newState = forIt;
           }
