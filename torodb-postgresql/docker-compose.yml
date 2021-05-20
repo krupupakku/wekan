@@ -9,15 +9,16 @@ version: '2'
 # https://github.com/wekan/wekan/wiki/Forgot-Password
 #---------------------------------------------------------------------------------------------------------
 # ==== Upgrading Wekan to new version =====
+# NOTE: MongoDB has changed from 3.x to 4.x, in that case you need backup/restore with --noIndexRestore
+#       see https://github.com/wekan/wekan/wiki/Backup
 # 1) Stop Wekan:
 #      docker-compose stop
-# 2) Download new version:
-#      docker-compose pull wekan
-# 3) If you have more networks for VPN etc as described at bottom of
-#    this config, download for them too:
-#      docker-compose pull wekan2
+# 2) Remove old Wekan app (wekan-app only, not that wekan-db container that has all your data)
+#      docker rm wekan-app
+# 3) Get newest docker-compose.yml from https://github.com/wekan/wekan to have correct image,
+#    for example: "image: quay.io/wekan/wekan" or version tag "image: quay.io/wekan/wekan:v4.52"
 # 4) Start Wekan:
-#      docker-compose start
+#      docker-compose up -d
 #----------------------------------------------------------------------------------
 # ==== OPTIONAL: DEDICATED DOCKER USER ====
 # 1) Optionally create a dedicated user for Wekan, for example:
@@ -84,17 +85,21 @@ version: '2'
 #      # 11) Start wekan
 #             docker start wekan-app
 #-------------------------------------------------------------------------
+# 2020-12-03:
+# - base images copied from Docker Hub to Quay to avoid Docker Hub rate limits,
+#   from: torodb/stampede:1.0.0, postgres:9.6, mongo:3.2
+#-------------------------------------------------------------------------
 
 services:
   torodb-stampede:
-    image: torodb/stampede:latest
+    image: quay.io/wekan/torodb-stampede:1.0.0
     networks:
       - wekan-tier
     links:
       - postgres
       - mongodb
     environment:
-      - POSTGRES_PASSWORD
+      - POSTGRES_PASSWORD=wekan
       - TORODB_SETUP=true
       - TORODB_SYNC_SOURCE=mongodb:27017
       - TORODB_BACKEND_HOST=postgres
@@ -104,11 +109,11 @@ services:
       - TORODB_BACKEND_PASSWORD=wekan
       - DEBUG
   postgres:
-    image: postgres:9.6
+    image: quay.io/wekan/postgres:9.6
     networks:
       - wekan-tier
     environment:
-      - POSTGRES_PASSWORD
+      - POSTGRES_PASSWORD=wekan
     ports:
       - "5432:5432"
   mongodb:
@@ -204,6 +209,9 @@ services:
       #
       # There is Feature Request: Logging date and time of all activity with summary reports,
       # and requesting reason for changing card to other column https://github.com/wekan/wekan/issues/1598
+      #---------------------------------------------------------------
+      # ==== NUMBER OF SEARCH RESULTS PER PAGE BY DEFAULT ====
+      #- RESULTS_PER_PAGE=20
       #---------------------------------------------------------------
       # ==== WEKAN API AND EXPORT BOARD ====
       # Wekan Export Board works when WITH_API=true.
@@ -309,12 +317,17 @@ services:
       # example: WEBHOOKS_ATTRIBUTES=cardId,listId,oldListId,boardId,comment,user,card,commentId
       #- WEBHOOKS_ATTRIBUTES=
       #-----------------------------------------------------------------
+      # ==== OAUTH2 ORACLE on premise identity manager OIM ====
+      #- ORACLE_OIM_ENABLED=true
+      #-----------------------------------------------------------------
       # ==== OAUTH2 ONLY WITH OIDC AND DOORKEEPER AS INDENTITY PROVIDER
       # https://github.com/wekan/wekan/issues/1874
       # https://github.com/wekan/wekan/wiki/OAuth2
       # Enable the OAuth2 connection
       # example: OAUTH2_ENABLED=true
       #- OAUTH2_ENABLED=false
+      # Optional OAuth2 CA Cert, see https://github.com/wekan/wekan/issues/3299
+      #- OAUTH2_CA_CERT=ABCD1234
       # Use OAuth2 ADFS additional changes. Also needs OAUTH2_ENABLED=true setting.
       #- OAUTH2_ADFS_ENABLED=false
       # OAuth2 docs: https://github.com/wekan/wekan/wiki/OAuth2

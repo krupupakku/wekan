@@ -11,9 +11,12 @@ SET ROOT_URL=http://localhost
 SET PORT=80
 SET MONGO_URL=mongodb://127.0.0.1:27017/wekan
 
-REM https://github.com/wekan/wekan/wiki/Troubleshooting-Mail
+REM # https://github.com/wekan/wekan/wiki/Troubleshooting-Mail
 REM SET MAIL_URL=smtps://username:password@email-smtp.eu-west-1.amazonaws.com:587/
 REM SET MAIL_FROM="Wekan Boards <info@example.com>"
+
+REM # ==== NUMBER OF SEARCH RESULTS PER PAGE BY DEFAULT ====
+REM SET RESULTS_PER_PAGE=20
 
 REM # If you disable Wekan API with false, Export Board does not work.
 SET WITH_API=true
@@ -114,10 +117,18 @@ REM SET WEBHOOKS_ATTRIBUTES=
 
 REM ------------------------------------------------------------
 
+REM # OAUTH2 ORACLE on premise identity manager OIM
+REM SET ORACLE_OIM_ENABLED=true
+
+REM ------------------------------------------------------------
+
 REM # Enable the OAuth2 connection
 REM # OAuth2 docs: https://github.com/wekan/wekan/wiki/OAuth2
 REM # example: OAUTH2_ENABLED=true
 REM SET OAUTH2_ENABLED=false
+
+REM # Optional OAuth2 CA Cert, see https://github.com/wekan/wekan/issues/3299
+REM SET OAUTH2_CA_CERT=ABCD1234
 
 REM # Use OAuth2 ADFS additional changes. Also needs OAUTH2_ENABLED=true setting.
 REM SET OAUTH2_ADFS_ENABLED=false

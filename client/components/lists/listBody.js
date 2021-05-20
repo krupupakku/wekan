@@ -168,13 +168,16 @@ BlazeComponent.extendComponent({
 
   cardsWithLimit(swimlaneId) {
     const limit = this.cardlimit.get();
+    const defaultSort = { sort: 1 };
+    const sortBy = Session.get('sortBy') ? Session.get('sortBy') : defaultSort;
     const selector = {
       listId: this.currentData()._id,
       archived: false,
     };
     if (swimlaneId) selector.swimlaneId = swimlaneId;
     return Cards.find(Filter.mongoSelector(selector), {
-      sort: ['sort'],
+      // sort: ['sort'],
+      sort: sortBy,
       limit,
     });
   },
@@ -239,7 +242,7 @@ BlazeComponent.extendComponent({
         .customFields()
         .fetch(),
       function(field) {
-        if (field.automaticallyOnCard)
+        if (field.automaticallyOnCard || field.alwaysOnCard)
           arr.push({ _id: field._id, value: null });
       },
     );
@@ -675,12 +678,18 @@ BlazeComponent.extendComponent({
             element.type = 'swimlane';
             _id = element.copy(this.boardId);
           } else if (this.isBoardTemplateSearch) {
-            board = Boards.findOne(element.linkedId);
-            board.sort = Boards.find({ archived: false }).count();
-            board.type = 'board';
-            board.title = element.title;
-            delete board.slug;
-            _id = board.copy();
+            Meteor.call(
+              'copyBoard',
+              element.linkedId,
+              {
+                sort: Boards.find({ archived: false }).count(),
+                type: 'board',
+                title: element.title,
+              },
+              (err, data) => {
+                _id = data;
+              },
+            );
           }
           Popup.close();
         },

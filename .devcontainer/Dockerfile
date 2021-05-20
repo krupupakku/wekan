@@ -1,12 +1,16 @@
-FROM ubuntu:rolling
+FROM quay.io/wekan/ubuntu:groovy-20201125.2
 LABEL maintainer="sgr"
+
+# 2020-12-03:
+# - Above Ubuntu base image copied from Docker Hub ubuntu:groovy-20201125.2
+#   to Quay to avoid Docker Hub rate limits.
 
 ENV BUILD_DEPS="gnupg gosu bsdtar wget curl bzip2 g++ build-essential python git ca-certificates iproute2"
 ENV DEBIAN_FRONTEND=noninteractive
 
 ENV \
     DEBUG=false \
-    NODE_VERSION=v12.18.4 \
+    NODE_VERSION=v12.22.1 \
     METEOR_RELEASE=1.10.2 \
     USE_EDGE=false \
     METEOR_EDGE=1.5-beta.17 \
@@ -15,6 +19,7 @@ ENV \
     ARCHITECTURE=linux-x64 \
     SRC_PATH=./ \
     WITH_API=true \
+    RESULTS_PER_PAGE="" \
     ACCOUNTS_LOCKOUT_KNOWN_USERS_FAILURES_BEFORE=3 \
     ACCOUNTS_LOCKOUT_KNOWN_USERS_PERIOD=60 \
     ACCOUNTS_LOCKOUT_KNOWN_USERS_FAILURE_WINDOW=15 \
@@ -39,6 +44,7 @@ ENV \
     TRUSTED_URL="" \
     WEBHOOKS_ATTRIBUTES="" \
     OAUTH2_ENABLED=false \
+    OAUTH2_CA_CERT="" \
     OAUTH2_ADFS_ENABLED=false \
     OAUTH2_LOGIN_STYLE=redirect \
     OAUTH2_CLIENT_ID="" \

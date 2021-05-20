@@ -22,10 +22,10 @@ const pkgdef :Spk.PackageDefinition = (
     appTitle = (defaultText = "Wekan"),
     # The name of the app as it is displayed to the user.
 
-    appVersion = 440,
+    appVersion = 528,
     # Increment this for every release.
 
-    appMarketingVersion = (defaultText = "4.40.0~2020-09-18"),
+    appMarketingVersion = (defaultText = "5.28.0~2021-05-07"),
     # Human-readable presentation of the app version.
 
     minUpgradableAppVersion = 0,
@@ -237,6 +237,7 @@ const myCommand :Spk.Manifest.Command = (
   environ = [
     # Note that this defines the *entire* environment seen by your app.
     (key = "PATH", value = "/usr/local/bin:/usr/bin:/bin"),
+    (key = "RESULTS_PER_PAGE", value = ""),
     (key = "WITH_API", value = "true"),
     (key = "RICHER_CARD_COMMENT_EDITOR", value="false"),
     (key = "CARD_OPENED_WEBHOOK_ENABLED", value="false"),
@@ -250,6 +251,7 @@ const myCommand :Spk.Manifest.Command = (
     (key = "TRUSTED_URL", value=""),
     (key = "WEBHOOKS_ATTRIBUTES", value=""),
     (key = "OAUTH2_ENABLED", value="false"),
+    (key = "OAUTH2_CA_CERT", value=""),
     (key = "OAUTH2_ADFS_ENABLED", value="false"),
     (key = "OAUTH2_CLIENT_ID", value="false"),
     (key = "OAUTH2_SECRET", value=""),

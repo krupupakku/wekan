@@ -23,6 +23,9 @@
       # This is local port where Wekan Node.js runs, same as below on Caddyfile settings.
       export PORT=2000
       #---------------------------------------------
+      # ==== NUMBER OF SEARCH RESULTS PER PAGE BY DEFAULT ====
+      #export RESULTS_PER_PAGE=20
+      #---------------------------------------------
       # Wekan Export Board works when WITH_API=true.
       # If you disable Wekan API with false, Export Board does not work.
       export WITH_API='true'
@@ -120,6 +123,9 @@
       # Example: export WEBHOOKS_ATTRIBUTES=cardId,listId,oldListId,boardId,comment,user,card,commentId
       export WEBHOOKS_ATTRIBUTES=''
       #---------------------------------------------
+      # OAUTH2 ORACLE on premise identity manager OIM
+      #export ORACLE_OIM_ENABLED=true
+      #---------------------------------------------
       # ==== OAUTH2 AZURE ====
       # https://github.com/wekan/wekan/wiki/Azure
       # 1) Register the application with Azure. Make sure you capture
@@ -127,6 +133,8 @@
       # 2) Configure the environment variables. This differs slightly
       #     by installation type, but make sure you have the following:
       #export OAUTH2_ENABLED=true
+      # Optional OAuth2 CA Cert, see https://github.com/wekan/wekan/issues/3299
+      #export OAUTH2_CA_CERT=ABCD1234
       # Use OAuth2 ADFS additional changes. Also needs OAUTH2_ENABLED=true setting.
       #export OAUTH2_ADFS_ENABLED=false
       # OAuth2 docs: https://github.com/wekan/wekan/wiki/OAuth2

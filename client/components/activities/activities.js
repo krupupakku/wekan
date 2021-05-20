@@ -1,6 +1,6 @@
-import sanitizeXss from 'xss';
+import DOMPurify from 'dompurify';
 
-const activitiesPerPage = 20;
+const activitiesPerPage = 500;
 
 BlazeComponent.extendComponent({
   onCreated() {
@@ -81,6 +81,30 @@ BlazeComponent.extendComponent({
     return createCardLink(this.currentData().activity.card());
   },
 
+  receivedDate() {
+    const receivedDate = this.currentData().activity.card();
+    if (!receivedDate) return null;
+    return receivedDate.receivedAt;
+  },
+
+  startDate() {
+    const startDate = this.currentData().activity.card();
+    if (!startDate) return null;
+    return startDate.startAt;
+  },
+
+  dueDate() {
+    const dueDate = this.currentData().activity.card();
+    if (!dueDate) return null;
+    return dueDate.dueAt;
+  },
+
+  endDate() {
+    const endDate = this.currentData().activity.card();
+    if (!endDate) return null;
+    return endDate.endAt;
+  },
+
   lastLabel() {
     const lastLabelId = this.currentData().activity.labelId;
     if (!lastLabelId) return null;
@@ -138,11 +162,15 @@ BlazeComponent.extendComponent({
             {
               href: source.url,
             },
-            sanitizeXss(source.system),
+            DOMPurify.sanitize(source.system, {
+              ALLOW_UNKNOWN_PROTOCOLS: true,
+            }),
           ),
         );
       } else {
-        return sanitizeXss(source.system);
+        return DOMPurify.sanitize(source.system, {
+          ALLOW_UNKNOWN_PROTOCOLS: true,
+        });
       }
     }
     return null;
@@ -166,10 +194,10 @@ BlazeComponent.extendComponent({
               href: attachment.url({ download: true }),
               target: '_blank',
             },
-            sanitizeXss(attachment.name()),
+            DOMPurify.sanitize(attachment.name()),
           ),
         )) ||
-      sanitizeXss(this.currentData().activity.attachmentName)
+      DOMPurify.sanitize(this.currentData().activity.attachmentName)
     );
   },
 
@@ -208,7 +236,7 @@ BlazeComponent.extendComponent({
 
 Template.activity.helpers({
   sanitize(value) {
-    return sanitizeXss(value);
+    return DOMPurify.sanitize(value, { ALLOW_UNKNOWN_PROTOCOLS: true });
   },
 });
 
@@ -219,10 +247,10 @@ function createCardLink(card) {
     Blaze.toHTML(
       HTML.A(
         {
-          href: card.absoluteUrl(),
+          href: card.originRelativeUrl(),
           class: 'action-card',
         },
-        sanitizeXss(card.title),
+        DOMPurify.sanitize(card.title, { ALLOW_UNKNOWN_PROTOCOLS: true }),
       ),
     )
   );
@@ -236,10 +264,10 @@ function createBoardLink(board, list) {
     Blaze.toHTML(
       HTML.A(
         {
-          href: board.absoluteUrl(),
+          href: board.originRelativeUrl(),
           class: 'action-board',
         },
-        sanitizeXss(text),
+        DOMPurify.sanitize(text, { ALLOW_UNKNOWN_PROTOCOLS: true }),
       ),
     )
   );

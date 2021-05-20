@@ -77,6 +77,14 @@ template(name="minicard")
                 if $eq definition.type "currency"
                   +viewer
                     = formattedCurrencyCustomFieldValue(definition)
+                else if $eq definition.type "date"
+                  .date
+                    +minicardCustomFieldDate
+                else if $eq definition.type "checkbox"
+                  .materialCheckBox(class="{{#if value }}is-checked{{/if}}")
+                else if $eq definition.type "stringtemplate"
+                  +viewer
+                    = formattedStringtemplateCustomFieldValue(definition)
                 else
                   +viewer
                     = trueValue
@@ -85,12 +93,15 @@ template(name="minicard")
       .minicard-assignees.js-minicard-assignees
         each getAssignees
           +userAvatar(userId=this)
-        hr
 
     if getMembers
       .minicard-members.js-minicard-members
         each getMembers
           +userAvatar(userId=this)
+
+    if showCreator
+      .minicard-creator
+        +userAvatar(userId=this.userId noRemove=true)
 
     .badges
       unless currentUser.isNoComments
@@ -118,3 +129,8 @@ template(name="minicard")
         .badge(class="{{#if checklistFinished}}is-finished{{/if}}")
           span.badge-icon.fa.fa-check-square-o
           span.badge-text.check-list-text {{checklistFinishedCount}}/{{checklistItemCount}}
+      if allSubtasks.count
+        .badge
+          span.badge-icon.fa.fa-sitemap
+          span.badge-text.check-list-text {{subtasksFinishedCount}}/{{allSubtasksCount}}
+          //{{subtasksFinishedCount}}/{{subtasksCount}} does not work because when a subtaks is archived, the count goes down
